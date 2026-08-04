@@ -35,11 +35,20 @@ New-Item -ItemType Directory -Force backups
 2. Boot modunu seçin; kırmızı LED programlama modunu belirtir.
 3. Bilgisayara bağlandığında Windows'ta Jieli UBOOT/UDISK/DEVICE benzeri bir
    aygıt görünmelidir.
-4. Araç aygıtı görebiliyor mu kontrol edin:
+4. Windows Gezgini'nden aygıta atanmış sürücü harfini not alın. Aşağıdaki
+   örnekte bu harf `D:` olarak kullanılmıştır.
+
+`jldevfind.py` bazı Windows 11 kurulumlarında UBOOT aygıtını otomatik
+bulamayabilir. Bu yüzden Windows'ta doğrudan aygıt yolu kullanmak daha
+güvenilirdir:
 
 ```powershell
-py .\jldevfind.py
+py .\jluboottool.py --device \\.\D: dump 0x0 0x40
 ```
+
+Bu komut ilk 64 baytı yalnızca ekrana yazdırır; doğru aygıta erişilebildiğini
+doğrulamak için güvenli bir kontroldür. `D:` yerine Windows'un verdiği sürücü
+harfini yazın.
 
 > [!TIP]
 > Aygıt görünmüyorsa önce D+/D- yönünü, hedef beslemesinin tamamen kesildiğini
@@ -51,12 +60,13 @@ Bu BT201 yapılandırmasında flash boyutu **512 KB = `0x80000`** bayttır.
 Önce iki ayrı, yalnızca-okuma dump alın:
 
 ```powershell
-py .\jluboottool.py read 0x0 0x80000 .\backups\BT201-stock-a.bin
-py .\jluboottool.py read 0x0 0x80000 .\backups\BT201-stock-b.bin
+py .\jluboottool.py --device \\.\D: read 0x0 0x80000 .\backups\BT201-stock-a.bin
+py .\jluboottool.py --device \\.\D: read 0x0 0x80000 .\backups\BT201-stock-b.bin
 ```
 
-Araç aygıt seçim ekranı gösterirse doğru Jieli UBOOT aygıtını seçin. Gerekirse
-araçtaki `--device` seçeneğiyle Windows aygıt yolunu doğrudan verebilirsiniz.
+`D:` yerine Windows'un verdiği sürücü harfini yazın. Araç aygıt seçim ekranı
+gösterirse doğru Jieli UBOOT aygıtını seçin; ancak Windows 11 için doğrudan
+`--device \\.\D:` biçimi önerilir.
 
 İki dosyanın SHA-256 değerini karşılaştırın:
 
