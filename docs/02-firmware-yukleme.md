@@ -60,7 +60,29 @@ Sketch: [MagicJL_Boot_Dongle.ino](../hardware/arduino-nano-dongle/MagicJL_Boot_D
 
 ### Şemalar
 
-Şema görselleri eklendiğinde aşağıdaki adlarla `images/flash/` altına konur:
+#### Röleli sürüm
+
+<p align="center">
+  <img src="../images/flash/arduino-nano-releli.png" alt="Arduino Nano röleli AC692x flash dongle şeması" width="720">
+</p>
+
+Bu sürüm, röle üzerinden hedef çipin beslemesini ve bilgisayar USB bağlantısını
+kontrol eder. Anahtar açıkken normal mod (yeşil LED), kapalıyken programlama
+modu (kırmızı LED) seçilir. Mod değişiminde sketch, hedefteki kapasitörlerin
+boşalması için bir saniye bekler.
+
+#### Rölesiz sürüm
+
+<p align="center">
+  <img src="../images/flash/arduino-nano-rolesiz.png" alt="Arduino Nano rölesiz AC692x flash dongle şeması" width="720">
+</p>
+
+Bu sade sürümde USB bağlantısı röle ile anahtarlanmaz. Hedef çipi devreye
+bağlayın, Arduino'ya güç verin ve **kırmızı boot LED'i yandığı anda** devreyi
+bilgisayara bağlayın. Bu zamanlama, `0x16EF` anahtarının açılıştan hemen sonra
+gönderilmesi için gereklidir.
+
+Görsellerin kaynak dosya adları:
 
 - `arduino-nano-releli.png` — USB ve çip beslemesini röle ile yöneten sürüm
 - `arduino-nano-rolesiz.png` — sadeleştirilmiş, rölesiz sürüm

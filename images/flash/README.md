@@ -1,8 +1,7 @@
 # Arduino Nano flash dongle şemaları
 
-Bu dizine şu iki görsel eklenecek:
+- `arduino-nano-releli.png`: USB ve hedef beslemesini röle ile yöneten sürüm.
+- `arduino-nano-rolesiz.png`: Bilgisayara elle bağlanılan sade sürüm.
 
-- `arduino-nano-releli.png`
-- `arduino-nano-rolesiz.png`
-
-Kullanım ve pin eşlemesi için [firmware yükleme rehberine](../../docs/02-firmware-yukleme.md) bakın.
+Bağlantı, pin eşlemesi ve doğru açılış sırası için
+[firmware yükleme rehberine](../../docs/02-firmware-yukleme.md) bakın.

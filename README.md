@@ -2,6 +2,16 @@
 
 > Küçük bir ses çipinin büyük bir kişiliği olabilir.
 
+<p align="center">
+  <img src="https://img.shields.io/badge/MCU-JieLi%20AC6925-red" alt="MCU: JieLi AC6925">
+  <img src="https://img.shields.io/badge/Board-BT201-blue" alt="Board: BT201">
+  <img src="https://img.shields.io/badge/IDE-Code%3A%3ABlocks-3b82f6" alt="IDE: Code::Blocks">
+  <img src="https://img.shields.io/badge/Compiler-JL%20Toolchain%202.5.2-blueviolet" alt="Compiler: JL Toolchain 2.5.2">
+  <img src="https://img.shields.io/badge/Clock-192%20MHz-orange" alt="Clock: 192 MHz">
+  <img src="https://img.shields.io/badge/Firmware-MagicJL%20v1.0.0-brightgreen" alt="Firmware: MagicJL v1.0.0">
+  <img src="https://img.shields.io/badge/License-See%20NOTICE-lightgrey" alt="License: See NOTICE">
+</p>
+
 MagicJL, Jieli AC692x tabanlı bir **BT201** kart için hazırlanmış kişiselleştirilmiş bir firmware çalışmasıdır. Proje; standart Bluetooth hoparlör/oynatıcı arayüzünü daha anlaşılır, daha görsel ve daha eğlenceli bir deneyime dönüştürmeyi hedefler.
 
 Bu çalışma, orijinal SDK’nin üzerine eklenen UI geliştirmelerini, ADKEY düzenlerini, Bluetooth durum ekranlarını ve gerçek-zamanlı ses görselleştiricisini içerir.
@@ -245,8 +255,8 @@ MagicJL için iki normal yükleme yolu bulunur:
 > Dongle bağlantısında D+ ve D- yönünü ölçmeden varsaymayın.
 
 > [!TIP]
-> Arduino Nano şemaları eklendikçe `images/flash/` altında yer alacak. Pin
-> eşlemesi, `0x16EF` boot anahtarı ve röleli/rölesiz devre notları için
+> Arduino Nano şemaları `images/flash/` altında yer alır. Pin eşlemesi,
+> `0x16EF` boot anahtarı ve röleli/rölesiz devre notları için
 > [firmware yükleme rehberine](docs/02-firmware-yukleme.md) bakın.
 
 ### 4. SDK'yi güvenli kullanma
