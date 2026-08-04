@@ -262,6 +262,10 @@ MagicJL için iki normal yükleme yolu bulunur:
 Stok firmware yedeği almak ve AC6925'i UBOOT modunda kurtarmak için
 [yedekleme ve kurtarma rehberine](docs/08-yedekleme-kurtarma.md) bakın.
 
+OLED'in PB0/PB1 bağlantısı ve kullanıcıların değiştirebileceği SDK özellik
+anahtarları için [OLED ve SDK yapılandırması](docs/09-oled-ve-sdk-yapilandirma.md)
+rehberine bakın.
+
 ### 4. SDK'yi güvenli kullanma
 
 - `apps/`: uygulama kaynaklarıdır; günlük geliştirme için ana çalışma alanıdır.

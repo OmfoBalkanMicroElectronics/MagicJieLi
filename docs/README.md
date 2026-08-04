@@ -12,3 +12,4 @@ Bu klasör, ana README'deki bilgileri uygulama sırasında kullanılacak kısa r
 | [Yerel müzik](06-yerel-muzik.md) | USB/SD oynatma, klasörler, tekrar, sarma ve silme onayı |
 | [SDK haritası](07-sdk-haritasi.md) | SDK dizinlerinin ne yaptığı ve nerelerin değiştirilmesi gerektiği |
 | [Yedekleme ve kurtarma](08-yedekleme-kurtarma.md) | Arduino Nano dongle, UBOOT flash dump ve doğrulama |
+| [OLED ve SDK yapılandırması](09-oled-ve-sdk-yapilandirma.md) | PB0/PB1 OLED bağlantısı ve `sdk_cfg.h` anahtarları |
