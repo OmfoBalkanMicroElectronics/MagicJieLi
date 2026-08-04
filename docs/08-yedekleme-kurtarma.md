@@ -5,9 +5,10 @@ firmware değiştirmeden önce çipin tüm flash içeriğinin doğrulanmış bir
 almaktır.
 
 > [!CAUTION]
-> Bu rehberdeki `read` komutu yalnızca okuma yapar. `write`, `erase` ve
-> `erasechip` komutlarını burada kullanmayın. Yanlış adres, yanlış dosya veya
-> güç kesintisi çipi kullanılmaz hâle getirebilir.
+> `erase` ve `erasechip` komutlarını kullanmayın. `write` yalnızca bu rehberin
+> restore testi bölümündeki gibi, **aynı karttan alınmış doğrulanmış tam dump**
+> ile kullanılmalıdır. Yanlış adres, yanlış dosya veya güç kesintisi çipi
+> kullanılmaz hâle getirebilir.
 
 ## Gerekenler
 
@@ -78,9 +79,9 @@ Get-FileHash .\backups\BT201-stock-b.bin -Algorithm SHA256
 ```
 
 > [!IMPORTANT]
-> Hash değerleri **birebir aynı değilse** yedeği geçerli kabul etmeyin. Dongle
-> bağlantısını ve güç sıralamasını düzeltip iki yeni dump alın. Eşleşen iki
-> dump'tan birini güvenli, salt-okunur bir yerde saklayın.
+> Bu iki **ilk stok dump**'ın hash değeri birebir aynı değilse yedeği geçerli
+> kabul etmeyin. Dongle bağlantısını ve güç sıralamasını düzeltip iki yeni dump
+> alın. Eşleşen iki dump'tan birini güvenli, salt-okunur bir yerde saklayın.
 
 ## 4. Dump içeriğini inceleme
 
@@ -93,6 +94,40 @@ py .\jl-misctools-main\firmware\fwunpack690.py .\backups\BT201-stock-a.bin
 Araç, dump yanına firmware yapısını açıklayan `jlfirmware.yaml`, `uboot.boot`,
 `ver.bin` ve `app_data/` benzeri parçaları çıkarır. Bu işlem yedek dosyasını
 değiştirmez.
+
+## 5. Test edilmiş restore akışı
+
+Bu akış MagicJL'in referans AC6925 / BT201 kartında, 512 KB tam flash dump ile
+başarıyla test edilmiştir. Yalnızca **aynı karttan alınan** yedeği kullanın:
+
+```powershell
+py .\jluboottool.py --device \\.\D: "write 0x0 .\backups\BT201-stock-a.bin"
+```
+
+Yazma/erase ilerlemesi tamamlanmadan güç, USB veya Nano bağlantısını kesmeyin.
+Ardından kartı normal modda açıp firmware'in çalıştığını kontrol edin.
+
+### Restore sonrası doğrulama
+
+Tekrar UBOOT moduna alın ve iki yeni okuma yapın:
+
+```powershell
+py .\jluboottool.py --device \\.\D: "read 0x0 0x80000 .\backups\BT201-verify-a.bin"
+py .\jluboottool.py --device \\.\D: "read 0x0 0x80000 .\backups\BT201-verify-b.bin"
+Get-FileHash .\backups\BT201-verify-a.bin -Algorithm SHA256
+Get-FileHash .\backups\BT201-verify-b.bin -Algorithm SHA256
+```
+
+Bu iki yeni `verify` hash'i eşleşirse restore sonrası flash içeriği kararlıdır.
+Referans BT201 testinde orijinal dump ile ilk verify dump arasında yalnızca 62
+byte fark oluştu; fark `0x740D0–0x74113` aralığındaki küçük bir metadata
+kaydındaydı. Firmware normal açıldı ve Bluetooth MAC/pairing bilgisi korundu.
+
+> [!NOTE]
+> Bu nedenle restore sonrasında orijinal dump ile verify dump'ın tüm SHA-256
+> hash'inin aynı olmasını tek başına başarı ölçütü kabul etmeyin. Önce ilk iki
+> stok dump'ın eşleştiğini, sonra da iki yeni verify dump'ın birbirleriyle
+> eşleştiğini doğrulayın.
 
 ## Kurtarma ilkesi
 
