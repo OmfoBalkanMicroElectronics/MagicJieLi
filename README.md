@@ -10,7 +10,7 @@ Bu çalışma, orijinal SDK’nin üzerine eklenen UI geliştirmelerini, ADKEY d
 
 Bu depo, tam ve derlenebilir **MagicJL BT201 OLED SDK** ağacını içerir. Kullanıcı için patch, overlay veya elle dosya kopyalama gerekmez:
 
-1. GitHub Releases sayfasından en yeni `MagicJL-BT201-SDK-vX.Y.zip` paketini indirin ve çıkarın; isterseniz bu depoyu doğrudan klonlayın.
+1. Geliştirme için bu depoyu doğrudan klonlayın veya ZIP olarak indirin. Hazır firmware için GitHub Releases sayfasındaki en yeni `.bfu` dosyasını kullanın.
 2. `BT_201_AC692x_SDK_release_V2.6.3\apps\sdk.cbp` dosyasını Code::Blocks ile açın.
 3. `SDK_flash` hedefi ile `Release` yapılandırmasını seçin.
 4. Build yapın ve kartınıza uygun yöntemle firmware'i yükleyin.
@@ -22,14 +22,14 @@ Hazır flash dosyası yayınlanmışsa derleme yapmadan doğrudan Release asset'
 ```text
 MagicJL-BT201/
 ├─ BT_201_AC692x_SDK_release_V2.6.3/  # Tam MagicJL SDK ağacı
-├─ tools/              # İsteğe bağlı geliştirici araçları
+├─ hardware/           # Arduino Nano flash dongle sketch'i
 ├─ docs/               # Kurulum, derleme, donanım, UI ve müzik rehberleri
-├─ images/             # README ekran görüntüleri
+├─ images/             # Ekran görüntüleri ve flash dongle şemaları
 ├─ README.md
 └─ .gitignore
 ```
 
-SDK içindeki `apps/obj/` ile `apps/download/post_build/flash/` altındaki üretilmiş firmware dosyaları Git'e eklenmez; `.gitignore` bunları dışarıda bırakır. Tam SDK ZIP ve `.bfu`/`.bin` firmware dosyaları GitHub Releases'a yüklenir.
+SDK içindeki `apps/obj/` ile `apps/download/post_build/flash/` altındaki üretilmiş firmware dosyaları Git'e eklenmez; `.gitignore` bunları dışarıda bırakır. GitHub, kaynak ağacının ZIP paketini otomatik sunar; hazır `.bfu` firmware dosyaları ayrıca Releases'a yüklenir.
 
 ## Öne Çıkanlar
 
@@ -227,7 +227,27 @@ Buradan kurulu Jieli PI32V2 compiler profilini seçin.
 4. Sadece `.c` / `.h` değişikliği yaptıysanız normal **Build** yeterlidir.
 5. Derleme sonrasında harita dosyası `apps/download/post_build/flash/Map.txt` altında güncellenir. RAM yerleşimi ve sembol izleme için faydalıdır.
 
-Yükleme modundaki kart bağlıysa SDK/toolchain yapılandırmasına göre firmware otomatik indirilebilir; terminalde `download complete` mesajını kontrol edin. Aksi durumda kartınızın desteklediği Jieli flash/upgrade yöntemiyle oluşan firmware'i yükleyin.
+Yükleme modundaki kart bağlıysa SDK/toolchain yapılandırmasına göre firmware otomatik indirilebilir; terminalde `download complete` mesajını kontrol edin. Aksi durumda oluşan `updata.bfu` dosyasını USB/SD güncelleme yöntemiyle veya Arduino Nano tabanlı flash dongle ile yükleyin.
+
+## Firmware yükleme
+
+MagicJL için iki normal yükleme yolu bulunur:
+
+1. **USB disk veya SD kart:** Kartın Jieli update mekanizması destekliyorsa
+   `updata.bfu` dosyasını kullanın.
+2. **Arduino Nano dongle:** `.bfu` güncellemesi çalışmayan kartlarda, çipi
+   açılış anında programlama moduna geçirip bilgisayara bağlayan özel dongle
+   kullanılabilir.
+
+> [!IMPORTANT]
+> Bu iki yöntem farklıdır: USB/SD güncellemesi firmware'in kendi update
+> işlevini kullanır; Nano dongle ise çipi doğrudan programlama moduna alır.
+> Dongle bağlantısında D+ ve D- yönünü ölçmeden varsaymayın.
+
+> [!TIP]
+> Arduino Nano şemaları eklendikçe `images/flash/` altında yer alacak. Pin
+> eşlemesi, `0x16EF` boot anahtarı ve röleli/rölesiz devre notları için
+> [firmware yükleme rehberine](docs/02-firmware-yukleme.md) bakın.
 
 ### 4. SDK'yi güvenli kullanma
 

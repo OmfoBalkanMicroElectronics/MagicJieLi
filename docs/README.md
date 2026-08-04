@@ -5,7 +5,7 @@ Bu klasör, ana README'deki bilgileri uygulama sırasında kullanılacak kısa r
 | Belge | İçerik |
 | --- | --- |
 | [Kurulum](01-kurulum.md) | Stok SDK, Code::Blocks ve toolchain kurulumu |
-| [MagicJL'i uygulama](02-magicjl-uygulama.md) | `Install-MagicJL.ps1` ile tam `apps/` klasörünü uygulama |
+| [Firmware yükleme](02-firmware-yukleme.md) | USB/SD ile `.bfu` güncellemesi ve Arduino Nano dongle |
 | [Derleme ve flash](03-derleme-flash.md) | `SDK_flash`, Release, Build/Rebuild ve firmware yükleme |
 | [Donanım ve ADKEY](04-donanim-adkey.md) | BT201, LCD, dirençli tuşlar, IR ve board sınırları |
 | [UI, Bluetooth ve spektrum](05-ui-bluetooth-spektrum.md) | Açılış, AVRCP, FFT, marquee ve gain ayarı |
