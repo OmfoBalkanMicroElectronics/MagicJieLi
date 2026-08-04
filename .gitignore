@@ -14,6 +14,3 @@ BT_201_AC692x_SDK_release_V2.6.3/apps.7z
 .vscode/
 .idea/
 *.layout
-
-# Vendor documentation may have separate redistribution terms.
-DOC/

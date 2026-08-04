@@ -270,6 +270,14 @@ OLED'in PB0/PB1 bağlantısı ve kullanıcıların değiştirebileceği SDK öze
 anahtarları için [OLED ve SDK yapılandırması](docs/09-oled-ve-sdk-yapilandirma.md)
 rehberine bakın.
 
+## Vendor dokümanları
+
+[`DOC/`](DOC/README.md) dizininde AC692x SDK kullanım belgeleri ile AC6925
+serisinin datasheet ve referans şemaları bulunur. Belgelerin büyük bölümü
+**Çince**dir; MagicJL tarafından yazılmamış veya çevrilmemiş, olduğu gibi
+sunulan vendor referanslarıdır. Köken ve lisans notları için
+[DOC/README.md](DOC/README.md) dosyasına bakın.
+
 ### 4. SDK'yi güvenli kullanma
 
 - `apps/`: uygulama kaynaklarıdır; günlük geliştirme için ana çalışma alanıdır.
