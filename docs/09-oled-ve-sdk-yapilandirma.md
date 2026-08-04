@@ -65,7 +65,7 @@ Birden fazla özellik değiştirildiğinde **Build → Rebuild** kullanın.
 | `EQ_UART_DEBUG` | `0` | Açılırsa varsayılan UART1 PB0/PB1 ile OLED çakışır. |
 | `USB_DISK_EN` | `1` | USB bellekten müzik/güncelleme akışı. |
 | `USB_PC_EN` | `1` | USB PC modu. USB debug seçilirse SDK bu modları kapatabilir. |
-| `SDMMC0_EN` / `SDMMC1_EN` | `0` / `0` | SD kart arayüzleri; karta uygun pin/hardware olmadan açmayın. |
+| `SDMMC0_EN` / `SDMMC1_EN` | `0` / `0` | SD kart arayüzleri. `SDMMC1`, aktif UART debug ile pin paylaşır; aşağıdaki adımları izleyin. |
 | `ADKEY_SD_MULT_EN` | `0` | ADKEY ve SD pin paylaşımı; direnç bölücüsü/SD uyumluluğu test edilmeden değiştirmeyin. |
 | `BT_TWS` | `0` | TWS eş-hoparlör modu; RAM ve EQ ile bağımlılıkları vardır. |
 | `BT_CONNTCT_NUM` | `1` | Aynı anda Bluetooth bağlantı sayısı. |
@@ -94,6 +94,39 @@ Birden fazla özellik değiştirildiğinde **Build → Rebuild** kullanın.
 > Bir özelliği açmadan önce yalnızca ilgili `#define` satırını değiştirin,
 > Rebuild yapın ve önce kısa fonksiyon testi uygulayın. Birden fazla makroyu
 > aynı anda değiştirmek hata kaynağını takip etmeyi zorlaştırır.
+
+### SDMMC1 ve UART debug paylaşımı
+
+MagicJL'in mevcut ayarında sistem debug çıktısı açıktır:
+
+```c
+#define __DEBUG
+
+#ifdef __DEBUG
+#define DEBUG_UART_SEL  UART2_TXPC4_RXPC5
+#define DEBUG_UART_RATE 115200
+#endif
+```
+
+Bu debug UART, SDK'nin `SDMMC1` arayüzüyle aynı pin kaynağını paylaşır. SD kart
+için `SDMMC1` kullanmak isteyenler `sdk_cfg.h` içinde şu iki değişikliği birlikte
+yapmalıdır:
+
+```c
+//#define __DEBUG        // UART debug çıktısını kapat
+
+#define SDMMC0_EN 0
+#define SDMMC1_EN 1      // SDMMC1'i etkinleştir
+```
+
+Ardından **Build → Rebuild** yapın. `__DEBUG` kapalıyken `log_printf(...)` boş
+makroya dönüşür; UART üzerinden hata/tuş logu gelmez. Yeni özellik geliştirirken
+veya key/message eşlemesi izlerken debug'ı tekrar açmak çok faydalıdır.
+
+> [!IMPORTANT]
+> Bu işlem OLED'i etkilemez: OLED PB0/PB1 üzerindedir, sistem debug UART ise
+> varsayılan MagicJL yapılandırmasında PC4/PC5 kullanır. Ancak `SDMMC1` için
+> kart üzerinde uygun SD soketi ve bağlantıların gerçekten bulunması gerekir.
 
 ## Debug UART notu
 
