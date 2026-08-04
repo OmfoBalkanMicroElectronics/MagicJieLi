@@ -43,7 +43,7 @@ bulamayabilir. Bu yüzden Windows'ta doğrudan aygıt yolu kullanmak daha
 güvenilirdir:
 
 ```powershell
-py .\jluboottool.py --device \\.\D: dump 0x0 0x40
+py .\jluboottool.py --device \\.\D: "dump 0x0 0x40"
 ```
 
 Bu komut ilk 64 baytı yalnızca ekrana yazdırır; doğru aygıta erişilebildiğini
@@ -60,11 +60,13 @@ Bu BT201 yapılandırmasında flash boyutu **512 KB = `0x80000`** bayttır.
 Önce iki ayrı, yalnızca-okuma dump alın:
 
 ```powershell
-py .\jluboottool.py --device \\.\D: read 0x0 0x80000 .\backups\BT201-stock-a.bin
-py .\jluboottool.py --device \\.\D: read 0x0 0x80000 .\backups\BT201-stock-b.bin
+py .\jluboottool.py --device \\.\D: "read 0x0 0x80000 .\backups\BT201-stock-a.bin"
+py .\jluboottool.py --device \\.\D: "read 0x0 0x80000 .\backups\BT201-stock-b.bin"
 ```
 
-`D:` yerine Windows'un verdiği sürücü harfini yazın. Araç aygıt seçim ekranı
+`D:` yerine Windows'un verdiği sürücü harfini yazın. `dump ...` veya
+`read ...` kısmı **tek bir çift tırnaklı ifade** olmalıdır; araç bu ifadeyi
+kendi UBOOT shell'ine tek komut olarak iletir. Araç aygıt seçim ekranı
 gösterirse doğru Jieli UBOOT aygıtını seçin; ancak Windows 11 için doğrudan
 `--device \\.\D:` biçimi önerilir.
 
