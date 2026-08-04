@@ -3,6 +3,10 @@
 > Küçük bir ses çipinin büyük bir kişiliği olabilir.
 
 <p align="center">
+  <img src="images/flash/bt201.jpg" alt="MagicJL hedef kartı: BT201 / JieLi AC6925" width="720">
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/MCU-JieLi%20AC6925-red" alt="MCU: JieLi AC6925">
   <img src="https://img.shields.io/badge/Board-BT201-blue" alt="Board: BT201">
   <img src="https://img.shields.io/badge/IDE-Code%3A%3ABlocks-3b82f6" alt="IDE: Code::Blocks">
