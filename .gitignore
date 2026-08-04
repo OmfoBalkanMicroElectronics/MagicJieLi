@@ -14,3 +14,8 @@ BT_201_AC692x_SDK_release_V2.6.3/apps.7z
 .vscode/
 .idea/
 *.layout
+
+# Keep the local vendor archive intact, but publish only the AC6925 subset
+# selected for this BT201 reference repository.
+DOC/AC692X_MCU_DOC+SCH/*
+!DOC/AC692X_MCU_DOC+SCH/AC6925*.pdf

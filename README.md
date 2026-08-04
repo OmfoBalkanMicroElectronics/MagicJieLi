@@ -20,6 +20,13 @@ MagicJL, Jieli AC692x tabanlı bir **BT201** kart için hazırlanmış kişisell
 
 Bu çalışma, orijinal SDK’nin üzerine eklenen UI geliştirmelerini, ADKEY düzenlerini, Bluetooth durum ekranlarını ve gerçek-zamanlı ses görselleştiricisini içerir.
 
+> [!NOTE]
+> **Unofficial community firmware/customization project; vendor SDK and docs
+> retain their owners’ terms.** MagicJL / OBM Team'e ait özgün katkılar
+> [LICENSE-MAGICJL.md](LICENSE-MAGICJL.md) kapsamında MIT ile paylaşılır;
+> bundled vendor SDK ve referans dokümanlar bu lisansın dışında kalır. Ayrıntı:
+> [NOTICE.md](NOTICE.md).
+
 ## Hızlı Başlangıç
 
 Bu depo, tam ve derlenebilir **MagicJL BT201 OLED SDK** ağacını içerir. Kullanıcı için patch, overlay veya elle dosya kopyalama gerekmez:
