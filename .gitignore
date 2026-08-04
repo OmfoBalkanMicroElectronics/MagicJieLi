@@ -1,0 +1,35 @@
+# Build output
+MagicJL/apps/obj/
+MagicJL/apps/**/*.o
+MagicJL/apps/**/*.o-*
+MagicJL/apps/**/*.depend
+MagicJL/apps/**/*.map
+MagicJL/apps/**/*.log
+
+# Generated firmware and post-build output
+MagicJL/apps/download/post_build/flash/*.app
+MagicJL/apps/download/post_build/flash/*.exe
+MagicJL/apps/download/post_build/flash/*.bin
+MagicJL/apps/download/post_build/flash/*.bfu
+MagicJL/apps/download/post_build/flash/*.boot
+MagicJL/apps/download/post_build/flash/*.map
+
+# Full MagicJL SDK build output
+BT_201_AC692x_SDK_release_V2.6.3/apps/obj/
+BT_201_AC692x_SDK_release_V2.6.3/apps/*.depend
+BT_201_AC692x_SDK_release_V2.6.3/apps/*.layout
+BT_201_AC692x_SDK_release_V2.6.3/apps/download/post_build/flash/*.app
+BT_201_AC692x_SDK_release_V2.6.3/apps/download/post_build/flash/*.exe
+BT_201_AC692x_SDK_release_V2.6.3/apps/download/post_build/flash/*.bin
+BT_201_AC692x_SDK_release_V2.6.3/apps/download/post_build/flash/*.bfu
+BT_201_AC692x_SDK_release_V2.6.3/apps/download/post_build/flash/*.boot
+BT_201_AC692x_SDK_release_V2.6.3/apps/download/post_build/flash/*.map
+BT_201_AC692x_SDK_release_V2.6.3/apps.7z
+
+# Local IDE state
+.vscode/
+.idea/
+*.layout
+
+# Vendor documentation may have separate redistribution terms.
+DOC/

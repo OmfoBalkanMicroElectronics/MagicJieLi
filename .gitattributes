@@ -1,0 +1,23 @@
+# Keep source files readable across Windows and Unix checkouts.
+* text=auto
+
+*.c   text eol=lf
+*.h   text eol=lf
+*.md  text eol=lf
+*.ps1 text eol=crlf
+
+# Firmware, toolchain, resource and library payloads must never be converted.
+*.a       binary
+*.app     binary
+*.bfu     binary
+*.bin     binary
+*.boot    binary
+*.br21    binary
+*.exe     binary
+*.lib     binary
+*.map     binary
+*.mp3     binary
+*.pix     binary
+*.res     binary
+*.sty     binary
+*.tab     binary
