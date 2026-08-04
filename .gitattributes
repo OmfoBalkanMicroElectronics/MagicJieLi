@@ -17,6 +17,7 @@
 *.lib     binary
 *.map     binary
 *.mp3     binary
+*.pdf     binary
 *.pix     binary
 *.res     binary
 *.sty     binary
