@@ -11,3 +11,4 @@ Bu klasör, ana README'deki bilgileri uygulama sırasında kullanılacak kısa r
 | [UI, Bluetooth ve spektrum](05-ui-bluetooth-spektrum.md) | Açılış, AVRCP, FFT, marquee ve gain ayarı |
 | [Yerel müzik](06-yerel-muzik.md) | USB/SD oynatma, klasörler, tekrar, sarma ve silme onayı |
 | [SDK haritası](07-sdk-haritasi.md) | SDK dizinlerinin ne yaptığı ve nerelerin değiştirilmesi gerektiği |
+| [Yedekleme ve kurtarma](08-yedekleme-kurtarma.md) | Arduino Nano dongle, UBOOT flash dump ve doğrulama |

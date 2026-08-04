@@ -259,6 +259,9 @@ MagicJL için iki normal yükleme yolu bulunur:
 > `0x16EF` boot anahtarı ve röleli/rölesiz devre notları için
 > [firmware yükleme rehberine](docs/02-firmware-yukleme.md) bakın.
 
+Stok firmware yedeği almak ve AC6925'i UBOOT modunda kurtarmak için
+[yedekleme ve kurtarma rehberine](docs/08-yedekleme-kurtarma.md) bakın.
+
 ### 4. SDK'yi güvenli kullanma
 
 - `apps/`: uygulama kaynaklarıdır; günlük geliştirme için ana çalışma alanıdır.
