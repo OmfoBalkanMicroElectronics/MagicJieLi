@@ -2,20 +2,19 @@
 
 ## Gerekli dosyalar
 
-- Bu MagicJL deposu
-- OLED destekli, dokunulmamış BT201 stok SDK paketi
+- Bu MagicJL deposu (tam SDK ağacıdır; ayrıca stok SDK, patch veya overlay gerekmez)
 - Code::Blocks 16.01
 - AC692x ile uyumlu Jieli PI32V2 LTO toolchain
 
-## Stok SDK'nin yeri
+## Projenin yeri
 
-Stok SDK'yi GitHub Releases'tan veya kendi arşivinizden çıkarın. Örnek:
+Depoyu boşluk içermeyen kısa bir yola klonlayın veya ZIP olarak çıkarın. Örnek:
 
 ```text
-C:\Jieli\BT_201_AC692x_SDK_release_V2.6.3\
+C:\Jieli\MagicJieLi\
 ```
 
-Bu klasörün içinde `apps\sdk.cbp`, `apps\`, `include_lib\` ve `tools\` bulunmalıdır.
+`BT_201_AC692x_SDK_release_V2.6.3\` klasörünün içinde `apps\sdk.cbp`, `apps\`, `include_lib\` ve `tools\` bulunmalıdır.
 
 ## IDE ve toolchain
 

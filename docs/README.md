@@ -1,15 +1,17 @@
-# MagicJL Dokümantasyonu
+# MagicJL documentation
 
-Bu klasör, ana README'deki bilgileri uygulama sırasında kullanılacak kısa rehberlere ayırır.
+**English** · [Türkçe](tr/README.md)
 
-| Belge | İçerik |
+These guides split the main README into step-by-step references to use while you work.
+
+| Guide | Covers |
 | --- | --- |
-| [Kurulum](01-kurulum.md) | Stok SDK, Code::Blocks ve toolchain kurulumu |
-| [Firmware yükleme](02-firmware-yukleme.md) | USB/SD ile `.bfu` güncellemesi ve Arduino Nano dongle |
-| [Derleme ve flash](03-derleme-flash.md) | `SDK_flash`, Release, Build/Rebuild ve firmware yükleme |
-| [Donanım ve ADKEY](04-donanim-adkey.md) | BT201, LCD, dirençli tuşlar, IR ve board sınırları |
-| [UI, Bluetooth ve spektrum](05-ui-bluetooth-spektrum.md) | Açılış, AVRCP, FFT, marquee ve gain ayarı |
-| [Yerel müzik](06-yerel-muzik.md) | USB/SD oynatma, klasörler, tekrar, sarma ve silme onayı |
-| [SDK haritası](07-sdk-haritasi.md) | SDK dizinlerinin ne yaptığı ve nerelerin değiştirilmesi gerektiği |
-| [Yedekleme ve kurtarma](08-yedekleme-kurtarma.md) | Arduino Nano dongle, UBOOT flash dump ve doğrulama |
-| [OLED ve SDK yapılandırması](09-oled-ve-sdk-yapilandirma.md) | PB0/PB1 OLED bağlantısı ve `sdk_cfg.h` anahtarları |
+| [Setup](01-setup.md) | Code::Blocks, the PI32V2 toolchain and opening the project |
+| [Flashing](02-flashing.md) | `.bfu` updates over USB/SD and the Arduino Nano boot dongle |
+| [Building & flashing](03-build-and-flash.md) | `SDK_flash`, Release, Build vs Rebuild, build outputs |
+| [Hardware & ADKEY](04-hardware-and-adkey.md) | BT201, button resistor map, IR and UART notes |
+| [UI, Bluetooth & spectrum](05-ui-bluetooth-spectrum.md) | Boot screen, AVRCP, FFT, marquee and gain tuning |
+| [Local music](06-local-music.md) | USB/SD playback, folders, repeat, seek and delete confirmation |
+| [SDK map](07-sdk-map.md) | What each SDK directory does and what is safe to edit |
+| [Backup & recovery](08-backup-and-recovery.md) | UBOOT access, verified flash dumps and a tested restore |
+| [OLED wiring & SDK config](09-oled-and-sdk-config.md) | PB0/PB1 OLED wiring and the `sdk_cfg.h` switches |

@@ -6,7 +6,7 @@ kartınızda pin, ekran sürücüsü ve çevre birimleri farklı olabilir.
 ## 128×64 I²C OLED bağlantısı
 
 MagicJL, yazılımsal I²C OLED sürücüsünü kullanır. Kaynakta
-[`i2c_oled.c`](../BT_201_AC692x_SDK_release_V2.6.3/apps/cpu/ui/lcd/i2c_oled.c)
+[`i2c_oled.c`](../../BT_201_AC692x_SDK_release_V2.6.3/apps/cpu/ui/lcd/i2c_oled.c)
 içinde açıkça tanımlandığı gibi hatlar şöyledir:
 
 | BT201 / AC6925 pini | Kart üzerindeki UART etiketi | OLED pini | Görev |
@@ -42,14 +42,14 @@ GND        ─────────────────────► GN
 3. `UI_ENABLE = 1` ve `LCD_128X64_EN = 1` olmalı.
 4. `EQ_UART_DEBUG = 0` kalmalı.
 5. Kaynakta ekran sürücüsünün
-   [`i2c_oled.c`](../BT_201_AC692x_SDK_release_V2.6.3/apps/cpu/ui/lcd/i2c_oled.c)
+   [`i2c_oled.c`](../../BT_201_AC692x_SDK_release_V2.6.3/apps/cpu/ui/lcd/i2c_oled.c)
    olarak projeye dahil edildiğini kontrol edin.
 
 ## `sdk_cfg.h` rehberi
 
 Ana yapılandırma dosyası:
 
-[`BT_201_AC692x_SDK_release_V2.6.3/apps/include/sdk_cfg.h`](../BT_201_AC692x_SDK_release_V2.6.3/apps/include/sdk_cfg.h)
+[`BT_201_AC692x_SDK_release_V2.6.3/apps/include/sdk_cfg.h`](../../BT_201_AC692x_SDK_release_V2.6.3/apps/include/sdk_cfg.h)
 
 Her değişiklikten önce çalışan `.bfu` veya tam UBOOT flash dump yedeği alın.
 Birden fazla özellik değiştirildiğinde **Build → Rebuild** kullanın.

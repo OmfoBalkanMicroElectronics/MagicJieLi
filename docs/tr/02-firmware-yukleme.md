@@ -56,14 +56,14 @@ Temel sıralama:
 | D5 | Kırmızı LED: boot/programlama modu |
 | D4 | Yeşil LED: normal mod |
 
-Sketch: [MagicJL_Boot_Dongle.ino](../hardware/arduino-nano-dongle/MagicJL_Boot_Dongle.ino)
+Sketch: [MagicJL_Boot_Dongle.ino](../../hardware/arduino-nano-dongle/MagicJL_Boot_Dongle.ino)
 
 ### Şemalar
 
 #### Röleli sürüm
 
 <p align="center">
-  <img src="../images/flash/arduino-nano-releli.png" alt="Arduino Nano röleli AC692x flash dongle şeması" width="720">
+  <img src="../../images/flash/arduino-nano-releli.png" alt="Arduino Nano röleli AC692x flash dongle şeması" width="720">
 </p>
 
 Bu sürüm, röle üzerinden hedef çipin beslemesini ve bilgisayar USB bağlantısını
@@ -74,7 +74,7 @@ boşalması için bir saniye bekler.
 #### Rölesiz sürüm
 
 <p align="center">
-  <img src="../images/flash/arduino-nano-rolesiz.png" alt="Arduino Nano rölesiz AC692x flash dongle şeması" width="720">
+  <img src="../../images/flash/arduino-nano-rolesiz.png" alt="Arduino Nano rölesiz AC692x flash dongle şeması" width="720">
 </p>
 
 Bu sade sürümde USB bağlantısı röle ile anahtarlanmaz. Hedef çipi devreye

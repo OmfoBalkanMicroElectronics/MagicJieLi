@@ -1,7 +1,7 @@
-# Arduino Nano flash dongle şemaları
+# Arduino Nano boot dongle schematics
 
-- `arduino-nano-releli.png`: USB ve hedef beslemesini röle ile yöneten sürüm.
-- `arduino-nano-rolesiz.png`: Bilgisayara elle bağlanılan sade sürüm.
+- `arduino-nano-releli.png`: relay version that switches USB and target power ("röleli" = with relay).
+- `arduino-nano-rolesiz.png`: simplified relay-less version, connected to the PC by hand ("rölesiz" = without relay).
+- `bt201.jpg`: the BT201 / AC6925 reference board.
 
-Bağlantı, pin eşlemesi ve doğru açılış sırası için
-[firmware yükleme rehberine](../../docs/02-firmware-yukleme.md) bakın.
+For wiring, pinout and the correct power-up sequence, see the [flashing guide](../../docs/02-flashing.md).

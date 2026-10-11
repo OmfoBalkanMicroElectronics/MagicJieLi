@@ -1,367 +1,303 @@
-# MagicJL — AC692x / BT201 Özel Firmware Çalışması
+# MagicJL: Custom Firmware for the JieLi AC6925 (BT201)
 
-> Küçük bir ses çipinin büyük bir kişiliği olabilir.
+> A small audio chip can have a big personality.
+
+**English** · [Türkçe](README.tr.md)
 
 <p align="center">
-  <img src="images/flash/bt201.jpg" alt="MagicJL hedef kartı: BT201 / JieLi AC6925" width="720">
+  <img src="images/flash/bt201.jpg" alt="MagicJL target board: BT201 with a JieLi AC6925" width="720">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/MCU-JieLi%20AC6925-red" alt="MCU: JieLi AC6925">
+  <img src="https://img.shields.io/badge/SoC-JieLi%20AC6925-red" alt="SoC: JieLi AC6925">
   <img src="https://img.shields.io/badge/Board-BT201-blue" alt="Board: BT201">
-  <img src="https://img.shields.io/badge/IDE-Code%3A%3ABlocks-3b82f6" alt="IDE: Code::Blocks">
-  <img src="https://img.shields.io/badge/Compiler-JL%20Toolchain%202.5.2-blueviolet" alt="Compiler: JL Toolchain 2.5.2">
+  <img src="https://img.shields.io/badge/ISA-PI32V2-6f42c1" alt="ISA: PI32V2">
   <img src="https://img.shields.io/badge/Clock-192%20MHz-orange" alt="Clock: 192 MHz">
-  <img src="https://img.shields.io/badge/Firmware-MagicJL%20v1.0.0-brightgreen" alt="Firmware: MagicJL v1.0.0">
-  <img src="https://img.shields.io/badge/License-See%20NOTICE-lightgrey" alt="License: See NOTICE">
+  <img src="https://img.shields.io/badge/IDE-Code%3A%3ABlocks%2016.01-3b82f6" alt="IDE: Code::Blocks 16.01">
+  <img src="https://img.shields.io/badge/Firmware-MagicJL%20v1.0-brightgreen" alt="Firmware: MagicJL v1.0">
+  <img src="https://img.shields.io/badge/License-MIT%20(MagicJL%20parts)%20%2B%20vendor-lightgrey" alt="License: MIT for MagicJL parts, vendor terms for the SDK">
 </p>
 
-MagicJL, Jieli AC692x tabanlı bir **BT201** kart için hazırlanmış kişiselleştirilmiş bir firmware çalışmasıdır. Proje; standart Bluetooth hoparlör/oynatıcı arayüzünü daha anlaşılır, daha görsel ve daha eğlenceli bir deneyime dönüştürmeyi hedefler.
+**MagicJL** is community firmware for the cheap **BT201** Bluetooth audio board, which is built around the **JieLi AC6925** (AC692x family). It replaces the stock speaker/player interface with a richer UI on a 128×64 OLED. Features include animated Bluetooth status screens, AVRCP "now playing" text, and a real-time **10-band FFT spectrum analyzer** computed in fixed-point on a chip that has no FPU or hardware FFT.
 
-Bu çalışma, orijinal SDK’nin üzerine eklenen UI geliştirmelerini, ADKEY düzenlerini, Bluetooth durum ekranlarını ve gerçek-zamanlı ses görselleştiricisini içerir.
+The AC692x is a niche part with almost no English documentation. This repository is also a practical reference for working with it: building the vendor SDK, entering the bootloader with an Arduino Nano, taking and verifying full flash dumps, restoring them, and configuring the SDK without breaking the board.
 
 > [!NOTE]
-> **Unofficial community firmware/customization project; vendor SDK and docs
-> retain their owners’ terms.** MagicJL / OBM Team'e ait özgün katkılar
-> [LICENSE-MAGICJL.md](LICENSE-MAGICJL.md) kapsamında MIT ile paylaşılır;
-> bundled vendor SDK ve referans dokümanlar bu lisansın dışında kalır. Ayrıntı:
-> [NOTICE.md](NOTICE.md).
+> **Unofficial community project.** MagicJL is not affiliated with or endorsed by Zhuhai JieLi Technology. Original MagicJL work is MIT-licensed under [LICENSE-MAGICJL.md](LICENSE-MAGICJL.md). The bundled vendor SDK and libraries stay under their owners' terms. See [NOTICE.md](NOTICE.md).
 
-## Hızlı Başlangıç
+---
 
-Bu depo, tam ve derlenebilir **MagicJL BT201 OLED SDK** ağacını içerir. Kullanıcı için patch, overlay veya elle dosya kopyalama gerekmez:
+## Contents
 
-1. Geliştirme için bu depoyu doğrudan klonlayın veya ZIP olarak indirin. Hazır firmware için GitHub Releases sayfasındaki en yeni `.bfu` dosyasını kullanın.
-2. `BT_201_AC692x_SDK_release_V2.6.3\apps\sdk.cbp` dosyasını Code::Blocks ile açın.
-3. `SDK_flash` hedefi ile `Release` yapılandırmasını seçin.
-4. Build yapın ve kartınıza uygun yöntemle firmware'i yükleyin.
+- [Features](#features)
+- [Hardware](#hardware)
+- [Quick start](#quick-start)
+- [Flashing](#flashing)
+- [Controls (ADKEY)](#controls-adkey)
+- [How the spectrum analyzer works](#how-the-spectrum-analyzer-works)
+- [User interface](#user-interface)
+- [Local music player](#local-music-player)
+- [SDK configuration](#sdk-configuration)
+- [Repository layout](#repository-layout)
+- [About the AC692x](#about-the-ac692x)
+- [The MagicJL family](#the-magicjl-family)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [Credits](#credits)
 
-Hazır flash dosyası yayınlanmışsa derleme yapmadan doğrudan Release asset'ini kullanabilirsiniz. Detaylı rehberler: [dokümantasyon dizini](docs/README.md).
+## Features
 
-## Depo Yapısı
+- **Animated boot screen** with typewriter welcome text and a sliding credit
+- **Custom Bluetooth screens:** spinning "waiting for connection" ring, connected/music/call icons, connected device name
+- **AVRCP now-playing:** track title and artist scroll across the screen in a custom pixel font
+- **10-band FFT spectrum analyzer** fed by real PCM data, with smoothing, peak-hold and per-band auto-gain, in both Bluetooth and USB/SD playback
+- **System info screen** that opens over any mode without interrupting playback
+- **Reworked ADKEY layout:** seek, folder navigation, EQ presets on long-press Mode, volume on hold
+- **Safe file deletion** with a two-step on-screen confirmation
+- **Turkish UI text** (written in ASCII for the built-in font)
 
-```text
-MagicJL-BT201/
-├─ BT_201_AC692x_SDK_release_V2.6.3/  # Tam MagicJL SDK ağacı
-├─ hardware/           # Arduino Nano flash dongle sketch'i
-├─ docs/               # Kurulum, derleme, donanım, UI ve müzik rehberleri
-├─ images/             # Ekran görüntüleri ve flash dongle şemaları
-├─ README.md
-└─ .gitignore
-```
+## Hardware
 
-SDK içindeki `apps/obj/` ile `apps/download/post_build/flash/` altındaki üretilmiş firmware dosyaları Git'e eklenmez; `.gitignore` bunları dışarıda bırakır. GitHub, kaynak ağacının ZIP paketini otomatik sunar; hazır `.bfu` firmware dosyaları ayrıca Releases'a yüklenir.
-
-## Öne Çıkanlar
-
-- Türkçeleştirilmiş LCD metinleri ve menüler
-- Animasyonlu açılış karşılama ekranı
-- Yükleme ekranında dönen nokta animasyonu
-- Özel Bluetooth bağlantı ekranları
-- Bluetooth bağlantı, müzik ve çağrı durum ikonları
-- Bağlı cihaz adı gösterimi
-- AVRCP üzerinden şarkı adı ve sanatçı bilgisi
-- Pikselle çizilen, akıcı AVRCP marquee yazısı
-- Gerçek PCM verisiyle çalışan 10 bantlı FFT spektrum analizörü
-- Peak-hold göstergeleri ve ses seviyesine bağlı bar limitleme
-- USB/SD müzik modunda görselleştirici
-- Bluetooth müzik modunda görselleştirici
-- Tuşla açılan, müzik çalmayı kesmeyen sistem bilgi ekranı
-- Uzun basılı Mode ile EQ preset değiştirme
-- ADKEY ile ileri/geri sarma, ses ve oynatma kontrolleri
-- Dosya silme için LCD onay ekranı
-
-## Görünüm ve Arayüz
-
-### Açılış
-
-Cihaz açılırken `Hoşgeldiniz!` metni karakter karakter gelir. Ardından `By OBM(BR4)` kredisi ekrana kayarak girer ve normal görev ekranına geçilir.
-
-### Bluetooth durumu
-
-Bluetooth modunda cihazın durumuna göre özel ekranlar gösterilir:
-
-| Durum | Ekran davranışı |
+| | |
 | --- | --- |
-| Bağlı değil | Dönen noktalı bağlantı halkası ve bağlantı bekleme ekranı |
-| Bağlanıyor | Onay işareti ve `BT Bağlandı` durumu |
-| Müzik çalıyor | Müzik ikonu, cihaz/AVRCP bilgisi ve spektrum ekranı |
-| Çağrı | Telefon ikonu ve çağrı durumu |
+| **SoC** | JieLi AC6925 (AC692x family), PI32V2 core @ 192 MHz |
+| **Memory** | 128 KB SRAM, 512 KB SPI flash (BT201 reference board) |
+| **Display** | 128×64 I²C OLED on PB0 (SCL) / PB1 (SDA), driven by software I²C |
+| **Input** | Resistor-ladder ADKEY buttons |
+| **Storage** | USB mass storage; SD card optional (see [SDK configuration](docs/09-oled-and-sdk-config.md)) |
+| **Programmer** | Arduino Nano boot dongle ([sketch](hardware/arduino-nano-dongle/)) |
 
-### AVRCP Now Playing
+> [!IMPORTANT]
+> MagicJL targets one specific **BT201 + OLED** board layout. Other AC692x boards can have different pins, flash size, display, button resistors and RF parts. On another board, **back up the stock firmware first** ([guide](docs/08-backup-and-recovery.md)) and expect to edit `sdk_cfg.h`.
 
-Telefon AVRCP metadata gönderiyorsa şarkı adı ve sanatçı alınır. Bilgi, Bluetooth spektrum ekranının üstünde küçük piksel yazı tipiyle sağdan sola akar.
+## Quick start
 
-- Başlık ve sanatçı sırayla gösterilir.
-- Metin 48 karaktere kadar saklanır.
-- Telefon metadata göndermiyorsa bağlı cihaz adı kullanılır.
-- Özel marquee, SDK’nin standart kayan yazı kontrolünden bağımsızdır; bu sayede spektrum yenilenirken bozulmaz.
+**Option A: prebuilt firmware.** Download the latest `.bfu` from [Releases](https://github.com/OmfoBalkanMicroElectronics/MagicJieLi/releases) and go to [Flashing](#flashing). Only use it on the same BT201 hardware.
 
-## Spektrum Analizörü
+**Option B: build from source.** This repository is the complete, buildable SDK tree. You don't need patches, overlays or file copying.
 
-Bu cihazda donanımsal FFT bulunmadığı için analizör tamamen yazılımla çalışır.
+1. Install **Code::Blocks 16.01** (`codeblocks-16.01mingw-setup.exe`), then **open and close it once** so it creates its config file.
+2. Install a **JieLi PI32V2 LTO toolchain** (`jl_toolchain_pi32v2_lto`) that supports the AC692x. Some distributions need a machine-bound licence (`*.key` → `*.lic`). MagicJL has also been built with a toolchain that needs no licence.
+3. Open `BT_201_AC692x_SDK_release_V2.6.3/apps/sdk.cbp` in Code::Blocks.
+4. Select the **`SDK_flash`** target and the **`Release`** configuration.
+5. Run **Build → Rebuild** the first time, and again whenever libraries, linker settings or board config change. For plain `.c`/`.h` edits, a normal **Build** is enough.
 
-1. PCM ses verisi, DAC’ye gitmeden hemen önce alınır.
-2. Düşük yük için her dördüncü örnek halka tamponuna kaydedilir.
-3. LCD güncellemesinde 256 noktalı, sabit-nokta Q15 radix-2 FFT hesaplanır.
-4. Hann penceresi, frekans sızıntısını azaltır.
-5. FFT sonuçları 10 görsel frekans bandına dönüştürülür.
-6. Her bant için yumuşatma, peak-hold ve otomatik seviye dengeleme uygulanır.
+If no compiler is selected, go to *Project → Build options → Compiler settings* and pick the JieLi PI32V2 profile.
 
-FFT, gerçek-zamanlı DAC/oynatma kesmesinde değil, yalnızca UI yenilenirken çalışır. Bu sayede Bluetooth ve yerel müzik oynatma stabil kalır.
+The output is written to `apps/download/post_build/flash/`. `updata.bfu` is the update image, and `Map.txt` is the symbol/RAM map. Build outputs are git-ignored. Prebuilt images are published only through Releases.
 
-## Yerel Müzik / MP3 Oynatıcı
+Full guides: **[documentation index](docs/README.md)**.
 
-MagicJL'in yerel oynatma modu USB disk veya etkinleştirilmiş SD depolamadaki müzik dosyaları için kullanılır. SDK'nin müzik görevi; dosya tarama, klasör yapısı, decoder, devam noktası ve ekran durumunu birlikte yönetir.
+## Flashing
 
-### Kullanılabilen işlevler
+> [!WARNING]
+> Flashing the wrong image, losing power or miswiring D+/D- can brick the board. **Take and verify a full flash dump before flashing anything.** See [Backup & recovery](docs/08-backup-and-recovery.md).
 
-- Oynat / duraklat; sonraki ve önceki dosya
-- Önceki / sonraki klasör
-- Basılı tuşla ileri sarma ve geri sarma; tuş bırakılınca FF/FR ikonunun temizlenmesi
-- Dosya adı, klasör adı, dosya numarası ve oynatma süresi gösterimi
-- EQ preset göstergesi ve uzun Mode basışıyla EQ değiştirme
-- Tekrar modları: tümü, tek parça, rastgele ve klasör tabanlı tekrar
-- Silme isteğinde iki aşamalı LCD onayı; ilk basışta doğrudan silme yapılmaz
-- Müzik çalarken hareketsizlikten sonra açılan PCM/FFT görselleştiricisi
-- Herhangi bir tuşla görselleştiriciden normal müzik ekranına dönüş
-- Decoder hata, cihaz çıkarılması ve dosya bulunamadı durumlarının UI bildirimi
+There are two ways to flash:
 
-### Yerel müzik tuşları
+1. **USB stick / SD card:** if the stock firmware supports JieLi's update mechanism, put `updata.bfu` on the storage and insert it.
+2. **Arduino Nano boot dongle:** for boards where `.bfu` updates don't work. The Nano power-cycles the chip and sends the `0x16EF` boot key over the USB data lines within the first milliseconds after power-up. The chip then enters JieLi's UBOOT/programming mode.
 
-| Direnç | Kısa basış | Uzun / basılı tutma |
+These are different mechanisms. USB/SD uses the running firmware's own updater, while the dongle puts the chip straight into its built-in USB bootloader. **Measure D+ and D- before connecting; don't trust wire colours.**
+
+Pinout, relay and relay-less schematics, and timing notes: [Firmware flashing guide](docs/02-flashing.md).
+
+## Controls (ADKEY)
+
+The button resistor ladder has a custom layout for this project.
+
+| Resistor | Short press | Long press / hold |
 | --- | --- | --- |
-| 100K | Silme isteği | Sistem bilgi ekranı |
-| 33K | Tekrar modu değiştir | - |
-| 24K | Önceki klasör | Geri sarma |
-| 15K | Sonraki klasör | İleri sarma |
-| 9.1K | Mod değiştir | EQ preset değiştir |
-| 6.2K | Sonraki parça | Ses artır |
-| 3K | Önceki parça | Ses azalt |
-| 0R | Oynat / duraklat | Sessiz |
+| 0 Ω | Play / pause | Mute |
+| 3 kΩ | Previous track | Volume down |
+| 6.2 kΩ | Next track | Volume up |
+| 9.1 kΩ | Change mode | Cycle EQ preset |
+| 15 kΩ | Next folder | Fast-forward |
+| 24 kΩ | Previous folder | Rewind |
+| 33 kΩ | Cycle repeat mode | — |
+| 100 kΩ | Delete file (local music; asks for confirmation) | System info screen |
 
-> Dosya silme fiziksel depolamayı değiştirir. Onay ekranı açıkken doğru tuşa basmadan silme yapılmamalıdır; test medyasıyla denemek en güvenli yaklaşımdır.
+Folder, repeat and delete actions apply in local music mode. Key maps live in `apps/task_manager/task_*/task_*_key.c`. Edit them if your resistor network is different.
 
-### İlgili kaynaklar
+## How the spectrum analyzer works
 
-| Dosya | Görev |
-| --- | --- |
-| `apps/task_manager/task_music/task_music.c` | Yerel müzik mesajları, silme onayı, dosya/klasör işlemleri |
-| `apps/task_manager/task_music/task_music_key.c` | Yerel müzik ADKEY eşlemesi |
-| `apps/common/music_player/music_player.c` | Dosya oynatma ve silme altyapısı |
-| `apps/common/music_player/music_decoder.c` | Decoder durumu, ileri/geri sarma ve oynatma zamanı |
-| `apps/cpu/ui/lcd/lcd_disp.c` | Dosya adı, süre, EQ, tekrar, silme/sarma ikonları ve görselleştirici |
+The AC692x has no hardware FFT or FPU, so the analyzer runs entirely in software with fixed-point maths:
 
-### Spektrum ayarı
+1. **Capture:** final PCM samples are read just before they enter the DAC queue (`audio_stream_write`). Only every 4th sample is stored into a 256-entry ring buffer, so the cost on the audio path is only a few dozen operations per buffer.
+2. **Window:** a 256-point **Hann window** (Q14) reduces spectral leakage.
+3. **Transform:** a 256-point **radix-2 decimation-in-time FFT** with Q15 twiddles and per-stage scaling.
+4. **Bands:** bins are mapped to 10 log-spaced bands centred at 60, 125, 250, 500 Hz, 1, 1.6, 2.5, 4, 6 and 9 kHz. The mapping follows the current DAC sample rate.
+5. **Display:** each band gets auto-gain against its own recent peak, smoothing and peak-hold. Overall bar height scales with volume.
 
-Barların genel yüksekliği şu bloktan ayarlanabilir:
+The FFT runs **only on the UI refresh path, never inside the DAC interrupt**, so Bluetooth and local playback stay glitch-free.
 
-`BT_201_AC692x_SDK_release_V2.6.3/apps/cpu/ui/lcd/lcd_disp.c`
+**Tuning:**
 
 ```c
-height_limit = 16 + sound.vol.sys_vol_l;
-if (height_limit > 48) {
+// apps/cpu/ui/lcd/lcd_disp.c: overall bar height
+height_limit = 16 + sound.vol.sys_vol_l;   // 16 = minimum movement at low volume
+if (height_limit > 48) {                   // 48 = max height without hitting the text row
     height_limit = 48;
 }
-```
 
-- `16`: düşük ses seviyesindeki minimum hareket alanı
-- `48`: üst metin alanına taşmadan ulaşılabilen maksimum bar yüksekliği
-
-Bandlara özel görsel kazanç ise burada bulunur:
-
-`BT_201_AC692x_SDK_release_V2.6.3/apps/cpu/audio/audio.c`
-
-```c
+// apps/cpu/audio/audio.c: display-only per-band gain in percent (bass → treble)
 static const u8 audio_visualizer_band_gain_pct[10] = {
     100, 100, 100, 100, 100, 110, 120, 130, 140, 150,
 };
 ```
 
-Soldaki değerler bas, sağdakiler tiz bölgesidir. Değeri artırmak yalnızca ekran barını büyütür; ses EQ’sunu değiştirmez.
+Raising a gain only makes that bar look taller. It does not change the audio EQ.
 
-## Sistem Bilgi Ekranı
+## User interface
 
-**100K ADKEY tuşuna uzun basıldığında** çalışan mod kesilmeden bilgi ekranı açılır. Ekran otomatik olarak sayfalar arasında geçer ve sonunda önceki arayüze geri döner.
+**Boot:** `Hosgeldiniz!` ("Welcome!") types in letter by letter, then `By OBM(BR4)` slides in before the normal mode screen appears.
 
-Gösterilen bilgiler:
+**Bluetooth status:**
 
-- MagicJL
-- Developed by OBM Team
-- Developer / Maintainer: BarbaroR4
-- Software: `MJL_4.8.26_V1.0_BT201`
-- 192 MHz PI32V2 Blackfin
-- 128 KB SRAM
-- 512 KB Flash
-- Easter egg: `AC692 UNLOCKED`
-
-## Tuş Yapılandırması
-
-Karttaki ADKEY direnç ağı proje için özelleştirilmiştir.
-
-| Direnç | Genel işlev |
+| State | Screen |
 | --- | --- |
-| 100K | Kısa basış: müzik modunda dosya silme; uzun basış: sistem bilgisi |
-| 9.1K | Kısa basış: mod değiştir; uzun basış: EQ preset değiştir |
-| 6.2K | Sonraki parça; basılı tut: ses artır |
-| 3K | Önceki parça; basılı tut: ses azalt |
-| 0R | Oynat / duraklat |
-| 24K | Basılı tut: geri sarma |
-| 15K | Basılı tut: ileri sarma |
+| Not connected | Spinning dotted ring, "waiting for connection" |
+| Connected | Check mark and `BT Baglandi` ("BT connected") |
+| Playing music | Music icon, device name / AVRCP info, spectrum analyzer |
+| Call | Phone icon and call state |
 
-> Tuş tablosu kullanılan karta göre değişebilir. Kendi direnç ağınız farklıysa ilgili `task_*_key.c` dosyalarındaki ADKEY tablolarını düzenleyin.
+**AVRCP now-playing:** if the phone sends metadata, title and artist scroll right-to-left in a small pixel font above the spectrum, stored up to 48 characters. If the phone sends no metadata, the connected device name is shown. The marquee is independent of the SDK's own scrolling-text control, so it doesn't tear while the spectrum redraws.
 
-## Geliştirme Ortamı, SDK Kurulumu ve İlk Derleme
-
-Bu SDK, klasik GCC/ARM toolchain ile derlenmez. AC692x ailesi için Jieli'nin **PI32V2 LTO toolchain**'i gerekir. Depodaki `DOC/AC692x_SDK_introduce.pdf` ve `DOC/AC692x_SDK_Tool description.pdf` bu akışın asıl kaynaklarıdır.
-
-### 1. Gerekli kurulumlar
-
-1. `codeblocks-16.01mingw-setup.exe` kurun.
-2. Code::Blocks'u **bir kez açıp kapatın**. Toolchain kurucusu, bu sırada oluşturulan ayar dosyasına kayıt ekler.
-3. AC692x ile uyumlu `jl_toolchain_pi32v2_lto` sürümünü kurun. Dokümanlardaki 2018 örneği `2.1.7` sürümüdür; elinizdeki SDK ile gelen veya Jieli tarafından verilen uygun sürümü kullanın.
-4. Bazı Jieli toolchain dağıtımları makineye özel lisans gerektirir. Böyle bir paket kullanıyorsanız JL toolchain aracından `*.key` üretin ve sağlanan `*.lic` dosyasını içe aktarın.
-
-> Bu proje lisanssız çalışan bir toolchain kurulumu ile de derlenmiştir. Lisans gereksinimi kullanılan toolchain paketi ve dağıtımına bağlıdır; lisans uyarısı görmüyorsanız ek işlem gerekmez.
-
-### 2. Projeyi açma
-
-Bu depo için ana proje dosyası genellikle aşağıdaki konumdadır:
+**System info:** a **long press on the 100 kΩ key** opens an auto-paging info screen over any mode, then returns to the previous UI:
 
 ```text
-BT_201_AC692x_SDK_release_V2.6.3\apps\sdk.cbp
+MAGICJL / DEVELOPED BY / OBM TEAM
+DEVELOPER / MAINTAINER: / BARBAROR4
+SW: MJL_BT201 / RELEASE V1.0 / 192MHZ PI32V2
+128KB SRAM / 512KB FLASH / AC692 UNLOCKED ;)
 ```
 
-Dosyayı Code::Blocks ile açın. İlk derlemede derleyici seçilmemiş görünüyorsa proje adına sağ tıklayın:
+## Local music player
+
+Plays music from a USB stick, or from SD if enabled. The SDK's music task handles scanning, folders, decoding, resume points and display state. MagicJL adds:
+
+- Play/pause, next/previous track and folder, hold-to-seek. The FF/FR icon clears when the key is released.
+- File name, folder name, track number and play time on screen
+- EQ preset indicator and long-press Mode to cycle presets
+- Repeat modes: all, single track, random and folder
+- **Two-step delete confirmation.** The first press never deletes anything.
+- Spectrum visualizer after about five seconds of inactivity during playback. Any key returns to the normal screen.
+- On-screen notices for decoder errors, device removal and missing files
+
+> [!CAUTION]
+> Deleting removes the file from the physical storage. Test with throwaway media first.
+
+| File | Responsibility |
+| --- | --- |
+| `apps/task_manager/task_music/task_music.c` | Music messages, delete confirmation, file/folder actions |
+| `apps/task_manager/task_music/task_music_key.c` | Local music ADKEY map |
+| `apps/common/music_player/music_player.c` | Playback and delete back-end |
+| `apps/common/music_player/music_decoder.c` | Decoder state, seek and play time |
+| `apps/cpu/ui/lcd/lcd_disp.c` | File name, time, EQ, repeat, delete/seek icons and the visualizer |
+
+## SDK configuration
+
+All feature switches live in [`apps/include/sdk_cfg.h`](BT_201_AC692x_SDK_release_V2.6.3/apps/include/sdk_cfg.h). Defaults for the BT201 reference board:
+
+| Feature | Status |
+| --- | --- |
+| 128×64 OLED (`UI_ENABLE`, `LCD_128X64_EN`) | On |
+| Bluetooth Classic, 1 connection, volume sync | On |
+| USB disk / USB PC mode | On |
+| SD card (`SDMMC0_EN` / `SDMMC1_EN`) | Off. `SDMMC1` shares pins with the debug UART. |
+| FM radio | Enabled in the SDK, but the BT201 has no FM RF parts |
+| AUX / line-in | Off (no input circuit on the board) |
+| Recording, echo, TWS | Off |
+| Low-power / sniff mode | Off (enabling it disables the UI) |
+| Debug UART | `UART2` on PC4/PC5 @ 115200 |
+
+> [!CAUTION]
+> Keep `EQ_UART_DEBUG = 0`. It uses UART1 on **PB0/PB1**, the same pins as the OLED.
+
+See [OLED wiring & SDK configuration](docs/09-oled-and-sdk-config.md) for the full table, resource conflicts and how to enable SD on `SDMMC1`.
+
+## Repository layout
 
 ```text
-Build options -> Compiler settings
+MagicJieLi/
+├─ BT_201_AC692x_SDK_release_V2.6.3/   # Complete, buildable MagicJL SDK tree
+│  ├─ apps/                            # Application source: MagicJL work happens here
+│  ├─ include_lib/                     # Vendor library headers (ABI-sensitive)
+│  └─ tools/                           # Vendor makefiles and libc
+├─ hardware/arduino-nano-dongle/       # Boot dongle sketch
+├─ docs/                               # Guides (English); docs/tr/ has the Turkish originals
+├─ images/                             # Board photo and dongle schematics
+├─ LICENSE-MAGICJL.md                  # MIT licence for original MagicJL work
+├─ NOTICE.md                           # Third-party / vendor notice
+└─ README.md
 ```
 
-Buradan kurulu Jieli PI32V2 compiler profilini seçin.
+Key MagicJL files inside `apps/`:
 
-### 3. Derleme
-
-1. `SDK_flash` hedefini seçin.
-2. `Release` yapılandırmasını seçin.
-3. İlk kez veya kütüphane/linker ayarı değiştirdikten sonra **Build -> Rebuild** kullanın.
-4. Sadece `.c` / `.h` değişikliği yaptıysanız normal **Build** yeterlidir.
-5. Derleme sonrasında harita dosyası `apps/download/post_build/flash/Map.txt` altında güncellenir. RAM yerleşimi ve sembol izleme için faydalıdır.
-
-Yükleme modundaki kart bağlıysa SDK/toolchain yapılandırmasına göre firmware otomatik indirilebilir; terminalde `download complete` mesajını kontrol edin. Aksi durumda oluşan `updata.bfu` dosyasını USB/SD güncelleme yöntemiyle veya Arduino Nano tabanlı flash dongle ile yükleyin.
-
-## Firmware yükleme
-
-MagicJL için iki normal yükleme yolu bulunur:
-
-1. **USB disk veya SD kart:** Kartın Jieli update mekanizması destekliyorsa
-   `updata.bfu` dosyasını kullanın.
-2. **Arduino Nano dongle:** `.bfu` güncellemesi çalışmayan kartlarda, çipi
-   açılış anında programlama moduna geçirip bilgisayara bağlayan özel dongle
-   kullanılabilir.
-
-> [!IMPORTANT]
-> Bu iki yöntem farklıdır: USB/SD güncellemesi firmware'in kendi update
-> işlevini kullanır; Nano dongle ise çipi doğrudan programlama moduna alır.
-> Dongle bağlantısında D+ ve D- yönünü ölçmeden varsaymayın.
-
-> [!TIP]
-> Arduino Nano şemaları `images/flash/` altında yer alır. Pin eşlemesi,
-> `0x16EF` boot anahtarı ve röleli/rölesiz devre notları için
-> [firmware yükleme rehberine](docs/02-firmware-yukleme.md) bakın.
-
-Stok firmware yedeği almak ve AC6925'i UBOOT modunda kurtarmak için
-[yedekleme ve kurtarma rehberine](docs/08-yedekleme-kurtarma.md) bakın.
-
-OLED'in PB0/PB1 bağlantısı ve kullanıcıların değiştirebileceği SDK özellik
-anahtarları için [OLED ve SDK yapılandırması](docs/09-oled-ve-sdk-yapilandirma.md)
-rehberine bakın.
-
-## Vendor dokümanları
-Üretici tarafından paylaşılamaz olarak işaretlendiği için repoda bulunmuyor.
-
-### 4. SDK'yi güvenli kullanma
-
-- `apps/`: uygulama kaynaklarıdır; günlük geliştirme için ana çalışma alanıdır.
-- `apps/include/`: uygulama yapılandırmaları ve başlıklar; dikkatle düzenlenebilir.
-- `include_lib/`: kütüphane ABI'siyle yakından ilişkilidir; yalnızca ne yaptığınızı biliyorsanız değiştirin.
-- Kütüphane dosyası, linker ayarı veya board yapılandırması değiştiğinde Rebuild yapın.
-- Her flash öncesi çalışan firmware ve resource paketinin yedeğini alın.
-
-## Etkin SDK / Kart Yapılandırması
-
-Aktif ayarlar `apps/include/sdk_cfg.h` içindedir. Bu BT201 yapılandırmasında görülen başlıca noktalar:
-
-| Özellik | Durum / Not |
+| Path | Purpose |
 | --- | --- |
-| 128×64 LCD | Etkin |
-| Bluetooth Classic | Etkin |
-| USB disk | Etkin |
-| USB PC modu | Konfigürasyon dalına bağlı; hedef ayarını kontrol edin |
-| FM | SDK'de etkin; kartta gerekli RF elemanları yoksa donanım eklenmeden kullanılamaz |
-| AUX/Line-In | Kart donanımı desteklemiyorsa kapalı tutulmalı |
-| Kayıt | SDK'de seçenekleri bulunur; kart/konfigürasyona bağlıdır |
-| TWS | Varsayılan olarak kapalı |
-| IR | PA4 için SDK tanımları mevcuttur; uygun 38 kHz alıcı ve eşleme gerekir |
-| UART firmware update | Varsayılan konfigürasyonda kapalı |
+| `cpu/ui/lcd/lcd_disp.c` | Screens, animations, system info, Bluetooth UI, visualizer drawing |
+| `cpu/ui/lcd/i2c_oled.c` | Software-I²C OLED driver (PB0/PB1) |
+| `cpu/audio/audio.c` | PCM capture, FFT and band computation |
+| `cpu/ui/task_ui/bt_ui.c` | Stores device name and AVRCP title/artist |
+| `btstack/user/bt_configs_user.c` | AVRCP metadata callback registration |
+| `task_manager/task_*/*_key.c` | Per-mode ADKEY/IOKEY maps |
+| `task_manager/task_common.c` | System info message shared by all modes |
+| `include/sdk_cfg.h` | Board and feature switches |
 
-### Dikkat
+**Editing safely:** do day-to-day work in `apps/`, and change `apps/include/` with care. Don't touch `include_lib/` unless you know the ABI. Use Rebuild after changing libraries, linker settings or board config.
 
-- Flashlama işlemi cihazı kullanılmaz hâle getirebilir. Önce çalışan firmware’in yedeğini alın.
-- Bu proje belirli bir **BT201 / AC692x** donanımı için geliştirilmiştir; pinler, LCD kaynağı, tuş dirençleri ve kart şeması farklı cihazlarda farklı davranabilir.
-- AUX/Line-In donanımı olmayan kartlarda bu modlar kullanılmamalıdır.
-- IR alıcı devresi ve protokolü karttan karta değişebilir; test edilmeden doğrudan bağlanmamalıdır.
+## About the AC692x
 
-## Proje Yapısı
+According to JieLi's family documentation, the AC692x offers:
 
-| Yol | Açıklama |
-| --- | --- |
-| `apps/cpu/ui/lcd/lcd_disp.c` | LCD ekranları, animasyonlar, sistem bilgisi, Bluetooth UI ve görselleştirici çizimi |
-| `apps/cpu/audio/audio.c` | PCM örnek toplama, FFT ve spektrum band hesaplaması |
-| `apps/cpu/ui/task_ui/bt_ui.c` | Bluetooth cihaz adı ile AVRCP title/artist saklama |
-| `apps/btstack/user/bt_configs_user.c` | AVRCP metadata callback kaydı |
-| `apps/task_manager/task_*/*_key.c` | Modlara göre ADKEY/IOKEY mesaj eşlemeleri |
-| `apps/task_manager/task_common.c` | Her modda çalışan ortak sistem bilgi mesajı |
-| `apps/include/sdk_cfg.h` | Çalışma modu, LCD, Bluetooth, USB, FM, kayıt ve board özellik anahtarları |
-| `apps/download/post_build/flash/Map.txt` | Derleme sonrası sembol/RAM haritası |
-| `DOC/` | SDK, toolchain, kullanıcı kılavuzu, AC692x datasheet ve referans şemaları |
+- 32-bit DSP-oriented core, 128 KB SRAM, 16 KB 4-way instruction cache
+- 64 interrupt sources with 4 programmable priority levels
+- Bluetooth 2.1 + 4.2 (Classic + BLE)
+- 16-bit stereo DAC, 12-bit stereo ADC with mic amplifier
+- USB full-speed OTG, 3× UART, SPI, SD host, SPI flash interface
+- 16-channel 10-bit ADC (used for ADKEY and voltage sensing)
+- RTC, watchdog, PWM, I²C, SPDIF in, GPIO wake-up
+- Built-in FM receiver (76–108 MHz; not usable at the same time as Bluetooth)
 
-## Donanım Özeti: AC692x ve AC6925A
+These are **family capabilities**. What actually works depends on the parts on your board, its pin mapping and `sdk_cfg.h`. For example, turning FM on in software does nothing without the RF parts.
 
-`DOC/AC692X User Manual V1.0.pdf` ailesel AC692x genel özelliklerini; `DOC/AC692X_MCU_DOC+SCH/AC6925A Datasheet V1.0.pdf` ise AC6925A varyantına ait referans bilgilerini içerir. Dokümandaki aile seviyesi öne çıkanlar şunlardır:
+**PI32V2** is JieLi's in-house CPU architecture: 16 general-purpose registers, 64-bit operations on register pairs, and fixed-point DSP arithmetic. That's why the visualizer uses Q15 maths throughout instead of floats.
 
-- 32-bit DSP çekirdeği, 128 KB dahili SRAM ve 16 KB 4-way instruction cache kullanımı
-- 64 kesme kaynağı ve dört seviyeli programlanabilir kesme önceliği
-- Bluetooth V2.1 / V4.2 yetenekleri
-- 16-bit stereo audio DAC ve MIC yükselteçli 12-bit stereo ADC
-- USB Full-Speed OTG, UART0/1/2, SPI, SD host ve SPI flash arabirimleri
-- 10-bit, 16 kanallı ADC; ADKEY ve gerilim algılama için kullanılabilir
-- RTC, watchdog, PWM, GPIO wake-up, I²C, SPDIF giriş ve Audio Link gibi çevre birimleri
-- Dahili FM alıcısı desteği (76-108 MHz; Bluetooth ile aynı anda kullanılamaz)
+Vendor datasheets and SDK manuals are **not** included, because the vendor marks them as non-redistributable. Get them from your SDK package or the vendor.
 
-Bu özellikler **çip ailesinin kapasitesidir**. Bu projede kullanılabilir olması, kart üzerindeki komponentlere, pin eşlemesine ve `sdk_cfg.h` ayarlarına bağlıdır. Örneğin SDK FM'i desteklese bile BT201 kartında FM RF elemanları yoksa yalnızca yazılımı açmak radyo işlevi sağlamaz.
+## The MagicJL family
 
-### PI32V2 notu
+This repository is **MagicJL v1.0**, the first generation. Two successors are in development on the same AC692x SDK:
 
-Bu firmware'in hedefi PI32V2 toolchain'idir. PI32V2; 16 genel amaçlı register, register çiftleriyle 64-bit işlem, sabit-nokta DSP aritmetiği ve paralel komut yürütmeye benzer özellikler sunan Jieli mimarisidir. MagicJL'in PCM tabanlı FFT görselleştiricisi bu yüzden float kullanmadan, Q15 sabit-nokta işlemlerle uygulanmıştır.
+| Generation | Display | Status |
+| --- | --- | --- |
+| **MagicJL** v1.0 (this repo) | 128×64 I²C OLED | Released |
+| **MagicJL Plus** | 128×64 SSD1306 OLED | Tested on AC6925A, not yet published; a port to the MagicJL PLUS board (AC6921A8, SH1106 SPI OLED) is planned: external SPI-flash font pack with 37 UI languages, launcher with background play, DS3231 clock and calendar, text reader, favourites, custom EQ |
+| **MagicJL Color 2.0** | 1.69" ST7789 240×280 IPS | In development, not yet tested on hardware: full-colour animated GUI, PC simulator and MagicJL Studio, AC6921A + PCM5102A build |
 
-## Gelecek Fikirleri
+## Roadmap
 
-- AVRCP süre/konum bilgisinden şarkı ilerleme çubuğu
-- Seçilebilir spektrum temaları: mirror, waveform, VU meter
-- Kayarak geçiş yapan sistem bilgi sayfaları
-- Ekran parlaklığı ve görselleştirici stili için ayar menüsü
-- Boşta kalınca saat / ekran koruyucu
-- Gizli uzun-basma animasyonu: `BLACKFIN AWAKENS`
+- Track progress bar from AVRCP position/duration
+- Selectable spectrum styles: mirror, waveform, VU meter
+- Sliding transitions between system info pages
+- Settings menu for brightness and visualizer style
+- Idle clock / screensaver
+- Hidden long-press animation: `BLACKFIN AWAKENS`
 
-## Katkı ve Notlar
+## Contributing
 
-Bu proje cihazını kurcalamayı, öğrenmeyi ve sınırlarını zorlamayı sevenler içindir. Hata raporu, ekran görüntüsü, farklı kart uyarlaması ve fikirler her zaman değerlidir.
+Bug reports, photos, ports to other AC692x boards and ideas are all welcome. Please open an issue first. When reporting a problem, include your board, display, flash size and the relevant `sdk_cfg.h` changes.
 
-SDK’nin ve üçüncü taraf araçların kendi lisansları geçerlidir. Bu depoya proprietary SDK veya dağıtım izni olmayan ikili dosyalar eklemeden önce lisans koşullarını kontrol edin.
+Before submitting a pull request, **do not add proprietary SDK files, vendor PDFs or binaries** that aren't already in the tree.
+
+## Credits
+
+- **[kagaimiq/jl-uboot-tool](https://github.com/kagaimiq/jl-uboot-tool)** and **[kagaimiq/jl-misctools](https://github.com/kagaimiq/jl-misctools)**: essential open tools for JieLi UBOOT access and firmware unpacking, used in the [backup guide](docs/08-backup-and-recovery.md)
+- **Zhuhai JieLi Technology**: the AC692x SoC and the BT201 SDK this project builds on
 
 ---
 
-**MagicJL** · Developed by **OBM Team** · Maintained by **BarbaroR4**
+**MagicJL** · developed by the **OBM Team** · maintained by **[@Barbaror4](https://github.com/Barbaror4)**
 
-`AC692 UNLOCKED`
+`AC692 UNLOCKED ;)`
